@@ -22,6 +22,7 @@ import shop
 Buttons = {
     "center": (0.5, 0.5),
     "return": (0.08, 0.05555),
+    "returndating": (0.17, 0.05555),
     #主页
     "fight_button": (0.89411, 0.88751),
     "house_button": (0.89625, 0.79444),
@@ -166,15 +167,16 @@ time.sleep(2)
 #time.sleep(1)
 #shop.buy_lvpiao(fd, Buttons)
 #time.sleep(2)
-fight.choose_taofa(fd, Buttons, 5)
+#fight.choose_taofa(fd, Buttons, 5)
 #func.myscreenshoot(fd)
-while True:
-    time.sleep(1)
+# while True:
+#     time.sleep(1)
 
 
 task_add()
 
 # 启动任务处理线程
+print("bp0")
 task_thread = threading.Thread(target=task_loop)
 task_thread.daemon = True
 task_thread.start()

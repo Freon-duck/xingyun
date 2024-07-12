@@ -154,6 +154,7 @@ def myscreenshoot(fd):
         saveBitMap.SaveBitmapFile(saveDC, tmp_path)
 
         with Image.open(tmp_path) as img:
+            #调整截图大小
             resized_img = img.resize((1600, 900), Image.LANCZOS)
             resized_img.save(tmp_path)
         # # 使用 PrintWindow 函数将窗口内容拷贝到位图对象
