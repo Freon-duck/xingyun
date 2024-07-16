@@ -139,18 +139,6 @@ def task_loop():
             task_queue.task_done()
         time.sleep(60)  # 等待一段时间再检查任务队列
 
-#测试点位，补充Buttons
-#func.click_button_test(fd,"autofight_button1")
-
-#func.click_button(fd, "shenmishangdian")
-#time.sleep(1)
-#shop.buy_lvpiao(fd, Buttons)
-#time.sleep(2)
-#fight.choose_taofa(fd, Buttons, 5)
-#func.myscreenshoot(fd)
-# while True:
-#     time.sleep(1)
-
 # 任务添加函数
 def task_add(scheduler, task, task_name, interval):
     task_queue.put([task, task_name])
@@ -177,19 +165,8 @@ task_thread.start()
 
 # 启动调度器
 scheduler.run()
-print("bp2")
 
-# 启动任务处理线程
-# print("bp0")
-# task_thread = threading.Thread(target=task_loop)
-# task_thread.daemon = True
-# task_thread.start()
-#
-# #主线程睡眠
-# while True:
-#     time.sleep(1)
-# # 等待所有任务完成
-# task_queue.join()  # 阻塞，直到所有任务都标记为完成
+
 
 
 

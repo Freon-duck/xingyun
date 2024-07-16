@@ -1,4 +1,6 @@
 #必须得有gui不然图片会出错
+import os
+
 import pyautogui
 
 import time
@@ -8,12 +10,15 @@ import numpy as np
 import win32gui
 import func
 
+def img(imgPath):
+    return os.path.join("./figs/", imgPath)
 # 读取输入图像和模板图像
 # fd = func.get_WindowPoint()
 # time.sleep(2)
 #func.myscreenshoot(fd)
-image = cv2.imread('./figs/screenshot.jpg', cv2.IMREAD_COLOR)
-template = cv2.imread('figs/qizhinum.png', cv2.IMREAD_COLOR)
+path = "./figs/"
+image = cv2.imread(path+"screenshot.jpg", cv2.IMREAD_COLOR)
+template = cv2.imread(img("lvpiao.png"), cv2.IMREAD_COLOR)
 
 # 获取模板的宽度和高度
 template_height, template_width = template.shape[:2]

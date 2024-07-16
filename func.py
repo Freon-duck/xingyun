@@ -159,27 +159,6 @@ def myscreenshoot(fd, tmp_path="figs/screenshot.jpg"):
             #调整截图大小
             resized_img = img.resize((1600, 900), Image.LANCZOS)
             resized_img.save(tmp_path)
-        # # 使用 PrintWindow 函数将窗口内容拷贝到位图对象
-        # result = windll.user32.PrintWindow(fd, saveDC.GetSafeHdc(), 0)
-        # print("PrintWindow result:", result)
-        #
-        # bmpinfo = saveBitMap.GetInfo()
-        # bmpstr = saveBitMap.GetBitmapBits(True)
-        #
-        # # 转换为 numpy 数组
-        # img = np.frombuffer(bmpstr, dtype='uint8')
-        # img.shape = (height, width, 4)
-        #
-        # # 使用 Pillow 保存图像
-        # img = Image.fromarray(img[..., :3])  # 忽略 alpha 通道
-        # #img = img.resize((1600, 900), Image.LANCZOS)  # 调整图像大小
-        # # 构建保存路径
-        # save_dir = "figs"
-        # if not os.path.exists(save_dir):
-        #     os.makedirs(save_dir)
-        # save_path = os.path.join(save_dir, "screenshot.jpg")
-        # img.save(save_path)
-        # print(f"Screenshot saved to {save_path}")
     finally:
         # 释放设备上下文和位图对象
         if hwndDC is not None:

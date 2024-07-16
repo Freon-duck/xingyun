@@ -50,7 +50,7 @@ def choose_taofa(fd, Buttons, boss_num):
     time.sleep(1)
     func.click_button(fd, Buttons["returndating"])
 
-def choose_jjc(fd, Buttons):
+def choose_jjc(fd, Buttons, DIR_Path="aaa"):
     """
     :param fd:
     :param Buttons:
@@ -198,49 +198,6 @@ def choose_jjc(fd, Buttons):
         time.sleep(50)
         func.click_button(fd, Buttons["jieshu"], 2)
 
-
-
-
-
-        # if max_val >= threshold:
-        #     # 获取匹配结果的位置
-        #     top_left = max_loc  # 对于 cv2.TM_CCOEFF_NORMED 方法，使用 max_loc
-        #     bottom_right = (top_left[0] + template_width, top_left[1] + template_height)
-        #     # 点击NPC对战
-        #     click_pos = ((bottom_right[0] + top_left[0]) / 2, (bottom_right[1] + top_left[1]) / 2)
-        #     func.myClick(fd, click_pos[0], click_pos[1])
-        #     time.sleep(2)
-        #     #匹配挑战按钮
-        #     func.myscreenshoot(fd)
-        #     image = cv2.imread('./figs/screenshot.jpg', cv2.IMREAD_COLOR)
-        #     template = cv2.imread('./figs/tiaozhan.png', cv2.IMREAD_COLOR)
-        #     # 获取模板的宽度和高度
-        #     template_height, template_width = template.shape[:2]
-        #     # 进行模板匹配
-        #     result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
-        #     # 找到匹配度最高的位置
-        #     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-        #     top_left = max_loc  # 对于 cv2.TM_CCOEFF_NORMED 方法，使用 max_loc
-        #     bottom_right = (top_left[0] + template_width, top_left[1] + template_height)
-        #     # 点击挑战
-        #     click_pos = ((bottom_right[0] + top_left[0]) / 2, (bottom_right[1] + top_left[1]) / 2)
-        #     func.myClick(fd, click_pos[0], click_pos[1])
-        #
-        #     func.click_button(fd, Buttons["kaishizhandou"], 2)
-        #     # 确认后会进入一个点击任意屏幕位置的按钮
-        #     # 挂机50s
-        #     time.sleep(50)
-        #     func.click_button(fd, Buttons["jieshu"], 2)
-        # #没有人机关卡打，返回主界面
-        # else:
-        #     time.sleep(2)
-        #     func.click_button(fd, Buttons["returndating"])
-        #     return
-
-# 通过句柄获取【线程ID 进程ID】
-# hread_id, process_id = win32process.GetWindowThreadProcessId(hwnd)
-# print(hread_id)
-# print(process_id)
 
 def a(aa):
     if aa:
