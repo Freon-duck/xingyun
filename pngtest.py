@@ -1,13 +1,19 @@
+#必须得有gui不然图片会出错
+import pyautogui
+
+import time
 import cv2
 from PyQt5.QtWidgets import QApplication
 import numpy as np
-
+import win32gui
 import func
 
 # 读取输入图像和模板图像
-
+# fd = func.get_WindowPoint()
+# time.sleep(2)
+#func.myscreenshoot(fd)
 image = cv2.imread('./figs/screenshot.jpg', cv2.IMREAD_COLOR)
-template = cv2.imread('figs/lvpiao1.png', cv2.IMREAD_COLOR)
+template = cv2.imread('figs/qizhinum.png', cv2.IMREAD_COLOR)
 
 # 获取模板的宽度和高度
 template_height, template_width = template.shape[:2]
@@ -19,7 +25,7 @@ result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
 min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 print(max_val)
 # 设置不同的匹配度阈值
-thresholds = [0.9]
+thresholds = [0.85]
 
 for threshold in thresholds:
     if max_val >= threshold:

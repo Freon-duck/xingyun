@@ -4,6 +4,7 @@ import numpy as np
 import os
 import random
 import time
+import cv2
 import win32ui
 import win32gui
 import win32con
@@ -31,6 +32,7 @@ def get_WindowPoint():
     #hwnd_again = win32gui.FindWindow(class_name, window_title)
 
     fd = win32gui.FindWindow("Qt5156QWindowIcon", "MuMu模拟器12")#父
+    #fd = win32gui.FindWindow("Qt5156QWindowIcon", "MuMu模拟器12-1")  # 父
     fd = win32gui.FindWindowEx(fd, None, "Qt5156QWindowIcon", "MuMuPlayer")#子
     print(f"Found window handle: {fd}")
     # hwnd_again = win32gui.FindWindow("Qt5156QWindowIcon", "MuMuPlayer")#直接用搜出来的句柄是0，初步怀疑是该函数是只能用于最外层的
@@ -121,7 +123,7 @@ def click_button_test(fd, button_name):
 #     save_path = os.path.join(save_dir, "screenshot.jpg")
 #     img.save(save_path)
 
-def myscreenshoot(fd):
+def myscreenshoot(fd, tmp_path="figs/screenshot.jpg"):
     '''
     截取后台窗口的截图，并保存到指定大小的图像文件
     可以最小化窗口
@@ -150,7 +152,7 @@ def myscreenshoot(fd):
         # 使用 BitBlt 函数将窗口的内容复制到位图对象
         saveDC.BitBlt((0, 0), (width, height), mfcDC, (0, 0), win32con.SRCCOPY)
         # 保存位图到文件
-        tmp_path = "figs/screenshot.jpg"
+        #tmp_path = "figs/screenshot.jpg"
         saveBitMap.SaveBitmapFile(saveDC, tmp_path)
 
         with Image.open(tmp_path) as img:
@@ -189,7 +191,27 @@ def myscreenshoot(fd):
         if saveBitMap is not None:
             win32gui.DeleteObject(saveBitMap.GetHandle())
 
-
+def reconnect(fd, Buttons):
+    """
+    :param fd:
+    :return:
+    """
+    myscreenshoot(fd, "figs/reconnect_screenshot.jpg")
+    image = cv2.imread('./figs/reconnect_screenshot.jpg', cv2.IMREAD_COLOR)
+    template = cv2.imread('./figs/reconnect.png', cv2.IMREAD_COLOR)
+    # 进行模板匹配
+    result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
+    # 找到匹配度最高的位置
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    print("断网匹配度：", max_val)
+    # 设置匹配度阈值
+    # 匹配2是0.87
+    threshold = 0.88
+    if max_val >= threshold:
+        print("断网重连")
+        time.sleep(1)
+        click_button(fd, Buttons["reconnect"], 1)
+        time.sleep(1)
 
 
 

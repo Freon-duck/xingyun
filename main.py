@@ -1,9 +1,9 @@
 import os
 import random
+import sched
 import sys
 import threading
 from queue import Queue
-
 import pyautogui
 import time
 import win32gui
@@ -23,16 +23,19 @@ Buttons = {
     "center": (0.5, 0.5),
     "return": (0.08, 0.05555),
     "returndating": (0.17, 0.05555),
+    "reconnect": (0.625, 0.5555),
     #主页
     "fight_button": (0.89411, 0.88751),
     "house_button": (0.89625, 0.79444),
     "shop_button": (0.08125, 0.8744),
+    "jidi_button":(0.6987, 0.8633),
     #冒险主页
     "yuansu": (),
     "xulie": (),
-    "jjc": (),
+    "jjc": (0.5, 0.9),
     "taofa": (0.8687, 0.9),
     #战斗
+    ##讨伐
     "taofa_boss1": (0.76375, 0.23333),
     "taofa_boss2": (0.76375, 0.58),
     "taofa_boss3": (0.76375, 0.91111),
@@ -41,15 +44,23 @@ Buttons = {
     "autofight_button1": (0.9356, 0.1744),
     "autofight_button2": (0.6243, 0.57),
     "autofight_button3": (),
-
+    ##jjc
+    "NPCfight":(0.85625, 0.45444),
+    "tiaozhan":(0.72125, -1),
+    "jieshu":(0.88125, 0.9),
     #商店购买
     "shenmishangdian": (0.9056, 0.7055), #神秘商店栏目
     "shenmi_buy": (0.7411, 0),  #184000按钮
     "queren_buy": (0.5956, 0.6811),
     "quxiao_buy": (0.3981, 0.6811),#用不上
+    #基地收菜
+    "donglizhuanghuang":(0.5, 0.55),
+    "lingqu":(0.88125, 0.9),
 }
 
 global fd
+# 获取窗口句柄（假设 func.get_WindowPoint() 可以返回正确的句柄）
+fd = func.get_WindowPoint()
 
 # def myClick(cx, cy):  # 第四种，可后台
 #     long_position = win32api.MAKELONG(int(cx), int(cy))  # 模拟鼠标指针 传送到指定坐标
@@ -109,57 +120,25 @@ global fd
 #         point = win32api.GetCursorPos()
 #         print("cur_point:", point)
 #
-# def choose_taofa(boss_num):
-#     '''
-#     :param boss_num:
-#     :return:
-#     '''
-#     click_button("taofa", 1)
-#     time.sleep(1)
-#     if boss_num > 3:
-#         # 拖拽鼠标
-#         # 获取窗口的矩形（左上角和右下角的坐标）
-#         rect = win32gui.GetClientRect(fd)
-#         # 计算拖拽起始位置
-#         start_pos = (Buttons["taofa_boss3"][0] * rect[2], Buttons["taofa_boss3"][1] * rect[3])
-#         end_pos = (Buttons["taofa_boss3"][0] * rect[2], Buttons["taofa_boss3"][1] * rect[3]/5)
-#         drag_mouse(start_pos, end_pos)#前台拖拽没问题
-#         boss_num = boss_num - 3
-#     click_button("taofa_boss"+str(boss_num), 1)
-#     time.sleep(1)
-#     # click_button("kaishizhandou", 2)
-#     # time.sleep(1)
-#     # click_button("kaishizhandou", 2)
-#     # time.sleep(3)
-#     # click_button("autofight_button1")
-#     # click_button("autofight_button2")
 
 
 # 定义任务队列
 task_queue = Queue()
 
-def task_add():
-    task_queue.put(lambda: shop.buy_lvpiao(fd, Buttons))
-    # 创建一个 Timer 对象，每隔30分钟再次执行
-    timer = threading.Timer(10, task_add)
-    # 启动定时器
-    timer.start()
-    print("task_add finish")
-
 # 任务处理循环
 def task_loop():
+    time.sleep(3)
     while True:
-        print("进入循环")
-        if not task_queue.empty():
-            print("获取任务")
-            task = task_queue.get()
+        #print("进入循环")
+        while not task_queue.empty():
+            func.reconnect(fd, Buttons)
+            task, task_name = task_queue.get()
+            print(f"获取任务: {task_name}")
             task()  # 执行任务
-            print("完成任务")
+            print(f"完成任务: {task_name}")
             task_queue.task_done()
-        time.sleep(1)  # 等待一段时间再检查任务队列
+        time.sleep(60)  # 等待一段时间再检查任务队列
 
-fd = func.get_WindowPoint()
-time.sleep(2)
 #测试点位，补充Buttons
 #func.click_button_test(fd,"autofight_button1")
 
@@ -172,20 +151,45 @@ time.sleep(2)
 # while True:
 #     time.sleep(1)
 
+# 任务添加函数
+def task_add(scheduler, task, task_name, interval):
+    task_queue.put([task, task_name])
+    print(f"添加任务: {task_name}")
+    # 重新调度任务添加
+    scheduler.enter(interval, 1, task_add, (scheduler, task, task_name, interval))
 
-task_add()
+# 初始化调度器
+scheduler = sched.scheduler(time.time, time.sleep)
+
+# 调度任务0，每隔6h执行一次
+scheduler.enter(0, 1, task_add, (scheduler, lambda: shop.jidishenchang(fd, Buttons), "jidishenchang", 3600*6))
+# 调度任务1，每隔3600秒执行一次
+scheduler.enter(0, 1, task_add, (scheduler, lambda: shop.buy_lvpiao(fd, Buttons), "buy_lvpiao", 3600))
+# 调度任务2，每隔3600秒执行一次
+scheduler.enter(0, 1, task_add, (scheduler, lambda: fight.choose_jjc(fd, Buttons), "choose_jjc", 3600))
+# 调度任务3，每隔5h秒执行一次
+scheduler.enter(0, 1, task_add, (scheduler, lambda: fight.choose_taofa(fd, Buttons, 2), "choose_taofa", 3600*5))
 
 # 启动任务处理线程
-print("bp0")
 task_thread = threading.Thread(target=task_loop)
 task_thread.daemon = True
 task_thread.start()
 
-#主线程睡眠
-while True:
-    time.sleep(1)
-# 等待所有任务完成
-task_queue.join()  # 阻塞，直到所有任务都标记为完成
+# 启动调度器
+scheduler.run()
+print("bp2")
+
+# 启动任务处理线程
+# print("bp0")
+# task_thread = threading.Thread(target=task_loop)
+# task_thread.daemon = True
+# task_thread.start()
+#
+# #主线程睡眠
+# while True:
+#     time.sleep(1)
+# # 等待所有任务完成
+# task_queue.join()  # 阻塞，直到所有任务都标记为完成
 
 
 

@@ -89,10 +89,9 @@ def buy(fd, Buttons, items):
             click_pos = (rect[2] * Buttons["shenmi_buy"], (bottom_right[1] + top_left[1]) / 2)
             func.myClick(fd, click_pos[0], click_pos[1])
 
-
 def buy_lvpiao(fd, Buttons):
-    print("这是绿票购买")
-    func.click_button(fd, Buttons["returndating"])#主界面唤醒
+    print("执行购买任务")
+    func.click_button(fd, Buttons["returndating"], 2)#主界面唤醒
     time.sleep(1)
     func.click_button(fd, Buttons["shop_button"])
     time.sleep(1)
@@ -112,7 +111,7 @@ def buy_lvpiao(fd, Buttons):
         result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
         # 找到匹配度最高的位置
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-        print("max_val=", max_val)
+        print(f"{item}匹配度：", max_val)
         # 设置匹配度阈值
         #匹配到0.999
         #匹配到买完的0.726
@@ -129,7 +128,10 @@ def buy_lvpiao(fd, Buttons):
             func.myClick(fd, click_pos[0], click_pos[1])
             time.sleep(1)
             func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
-    time.sleep(2)
+            #确认后会进入一个点击任意屏幕位置的按钮
+            time.sleep(1)
+            func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
+        time.sleep(2)
     #拖动屏幕购买最下的
     rect = win32gui.GetClientRect(fd)
     # 计算拖拽起始位置, 固定的
@@ -150,7 +152,7 @@ def buy_lvpiao(fd, Buttons):
         result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
         # 找到匹配度最高的位置
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-        print("max_val=", max_val)
+        print(f"{item}匹配度：", max_val)
         # 设置匹配度阈值
         # 匹配到0.999
         # 匹配到买完的0.726
@@ -167,5 +169,19 @@ def buy_lvpiao(fd, Buttons):
             func.myClick(fd, click_pos[0], click_pos[1], 1)
             time.sleep(1)
             func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
+            time.sleep(1)
+            func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
+        time.sleep(2)
+    func.click_button(fd, Buttons["returndating"], 2)
+
+def jidishenchang(fd, Buttons):
+    print("执行基地收菜任务")
+    func.click_button(fd, Buttons["returndating"], 2)  # 主界面唤醒
     time.sleep(1)
+    func.click_button(fd, Buttons["jidi_button"])
+    time.sleep(2)
+    func.click_button(fd, Buttons["donglizhuanghuang"])
+    time.sleep(2)
+    func.click_button(fd, Buttons["lingqu"], 2)
+    time.sleep(2)
     func.click_button(fd, Buttons["returndating"], 2)
