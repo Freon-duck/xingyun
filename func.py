@@ -19,26 +19,28 @@ def get_WindowPoint():
     获取窗口句柄
     :return 返回该句柄
     """
-    time.sleep(2)
-    # point = win32api.GetCursorPos()
-    # print("cur_point:", point)
-    # 通过坐标获取坐标下的【窗口句柄】
-    # fd = win32gui.WindowFromPoint(point)
-    # print("fd:", fd)
-    # window_title = win32gui.GetWindowText(fd)
-    # print(f"Window title: {window_title}")
-    # class_name = win32gui.GetClassName(fd)
-    # print(f"Class name: {class_name}")
-    #hwnd_again = win32gui.FindWindow(class_name, window_title)
-
     fd = win32gui.FindWindow("Qt5156QWindowIcon", "MuMu模拟器12")#父
     #fd = win32gui.FindWindow("Qt5156QWindowIcon", "MuMu模拟器12-1")  # 父
+    #fd = win32gui.FindWindow("Qt5156QWindowIcon", "星陨计划")  # 父
     fd = win32gui.FindWindowEx(fd, None, "Qt5156QWindowIcon", "MuMuPlayer")#子
     print(f"Found window handle: {fd}")
     # hwnd_again = win32gui.FindWindow("Qt5156QWindowIcon", "MuMuPlayer")#直接用搜出来的句柄是0，初步怀疑是该函数是只能用于最外层的
     # print(f"Found window handle: {hwnd_again}")
     # hwnd_again = win32gui.FindWindow("nemuwin", "nemudisplay")
     # print(f"Found window handle: {hwnd_again}")
+    return fd
+
+def get_WindowPoint_byhand():
+    """
+    获取窗口句柄
+    :return 返回该句柄
+    """
+    time.sleep(2)
+    point = win32api.GetCursorPos()
+    print("cur_point:", point)
+    #通过坐标获取坐标下的【窗口句柄】
+    fd = win32gui.WindowFromPoint(point)
+    print("fd:", fd)
     return fd
 
 def myClick(fd, cx, cy, click_num=1):  # 第四种，可后台
@@ -49,7 +51,6 @@ def myClick(fd, cx, cy, click_num=1):  # 第四种，可后台
         win32api.SendMessage(fd, win32con.WM_LBUTTONUP, win32con.MK_LBUTTON, long_position)  # 模拟鼠标弹起
         # 随机间隔0.1到0.5秒
         time.sleep(random.uniform(0.1, 0.2))
-
 
 def drag_mouse(fd, start_pos, end_pos):
     # 将起始坐标转换为 LONG 值
@@ -93,7 +94,7 @@ def click_button(fd, button, click_num=1):
         # 随机间隔0.1到0.5秒
         time.sleep(random.uniform(0.1, 0.2))
 
-def click_button_test(fd, button_name):
+def click_button_test(fd):
     #time.sleep(5)
     rect = win32gui.GetWindowRect(fd)
     print(rect)
@@ -123,11 +124,13 @@ def click_button_test(fd, button_name):
 #     save_path = os.path.join(save_dir, "screenshot.jpg")
 #     img.save(save_path)
 
-def myscreenshoot(fd, tmp_path="figs/screenshot.jpg"):
+def myscreenshoot(fd, tmp_path="screenshot.jpg"):
     '''
     截取后台窗口的截图，并保存到指定大小的图像文件
     可以最小化窗口
     '''
+    dir_path = "./figs/"
+    tmp_path = dir_path + tmp_path
     # 获取窗口的设备上下文
     # 获取窗口设备上下文
     hwndDC = None
@@ -170,12 +173,12 @@ def myscreenshoot(fd, tmp_path="figs/screenshot.jpg"):
         if saveBitMap is not None:
             win32gui.DeleteObject(saveBitMap.GetHandle())
 
-def reconnect(fd, Buttons):
+def reconnect(fd, Buttons, sleep_time=1):
     """
     :param fd:
     :return:
     """
-    myscreenshoot(fd, "figs/reconnect_screenshot.jpg")
+    myscreenshoot(fd, "reconnect_screenshot.jpg")
     image = cv2.imread('./figs/reconnect_screenshot.jpg', cv2.IMREAD_COLOR)
     template = cv2.imread('./figs/reconnect.png', cv2.IMREAD_COLOR)
     # 进行模板匹配
@@ -190,9 +193,35 @@ def reconnect(fd, Buttons):
         print("断网重连")
         time.sleep(1)
         click_button(fd, Buttons["reconnect"], 1)
-        time.sleep(1)
+        time.sleep(sleep_time)
 
+def ImgCmp(fd, Image, Template, threshold):
+    '''
+    :param fd:
+    :param Image: 被匹配的screenshot截图
+    :param Template: 匹配的图标
+    :param threshold: 匹配阈值
+    :return:
+    '''
+    myscreenshoot(fd)
+    dir_path = "./figs/"
+    img_path = dir_path + Image
+    template_path = dir_path + Template
+    image = cv2.imread(img_path, cv2.IMREAD_COLOR)
+    template = cv2.imread(template_path, cv2.IMREAD_COLOR)
 
+    # 获取模板的宽度和高度
+    template_height, template_width = template.shape[:2]
 
+    # 进行模板匹配
+    result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
+
+    # 找到匹配度最高的位置
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    print(f'{Template}匹配度：',max_val)
+    if max_val > threshold:
+        return min_val, max_val, min_loc, max_loc, template_height, template_width
+    else:
+        return
 
 

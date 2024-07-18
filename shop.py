@@ -127,6 +127,14 @@ def buy_lvpiao(fd, Buttons):
             click_pos = (rect[2]*Buttons["shenmi_buy"][0], (bottom_right[1]+top_left[1])/2)
             func.myClick(fd, click_pos[0], click_pos[1])
             time.sleep(1)
+
+            ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "jinbibuzu.png", 0.9)
+            #金币不够
+            if ImgCmpRes is not None:
+                func.click_button(fd, Buttons["returndating"], 3)
+                return
+
+
             func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
             #确认后会进入一个点击任意屏幕位置的按钮
             time.sleep(1)
@@ -168,6 +176,13 @@ def buy_lvpiao(fd, Buttons):
             click_pos = (rect[2] * Buttons["shenmi_buy"][0], (bottom_right[1] + top_left[1]) / 2)
             func.myClick(fd, click_pos[0], click_pos[1], 1)
             time.sleep(1)
+
+            ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "jinbibuzu.png", 0.9)
+            # 金币不够
+            if ImgCmpRes is not None:
+                func.click_button(fd, Buttons["returndating"], 3)
+                return
+
             func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
             time.sleep(1)
             func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])

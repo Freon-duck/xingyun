@@ -37,9 +37,19 @@ def choose_taofa(fd, Buttons, boss_num):
         boss_num = boss_num - 3
     func.click_button(fd, Buttons["taofa_boss"+str(boss_num)], 1)
     time.sleep(1)
-    #战斗设置
-    func.click_button(fd, Buttons["kaishizhandou"], 2)
+    #队伍设置
+    func.click_button(fd, Buttons["duiwushezhi"], 1)
     time.sleep(1)
+
+    ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "repeatfight.png", 0.95)
+    if ImgCmpRes is None:
+        func.click_button(fd, Buttons["returndating"], 2)
+        return
+    else:
+        #min_val, max_val, min_loc, max_loc, *res = ImgCmpRes
+        func.click_button(fd, Buttons["repeatfight"])
+        time.sleep(1)
+
     #战斗开始
     func.click_button(fd, Buttons["kaishizhandou"], 2)
     time.sleep(3)
@@ -70,7 +80,7 @@ def choose_jjc(fd, Buttons, DIR_Path="aaa"):
     print("棋子数目0匹配度：", max_val)
     # 设置匹配度阈值
     # 匹配2是0.87
-    threshold = 0.88
+    threshold = 0.9
     if max_val >= threshold:
         print("棋子数目不足")
         return
@@ -91,7 +101,7 @@ def choose_jjc(fd, Buttons, DIR_Path="aaa"):
         print("棋子数目0匹配度：", max_val)
         # 设置匹配度阈值
         # 匹配5是0.84
-        threshold = 0.88
+        threshold = 0.9
         if max_val >= threshold:
             print("棋子数目不足")
             time.sleep(2)
@@ -199,9 +209,4 @@ def choose_jjc(fd, Buttons, DIR_Path="aaa"):
         func.click_button(fd, Buttons["jieshu"], 2)
 
 
-def a(aa):
-    if aa:
-        print(1)
-    else:
-        return
 

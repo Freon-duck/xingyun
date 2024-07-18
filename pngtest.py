@@ -12,13 +12,18 @@ import func
 
 def img(imgPath):
     return os.path.join("./figs/", imgPath)
+
 # 读取输入图像和模板图像
-# fd = func.get_WindowPoint()
-# time.sleep(2)
-#func.myscreenshoot(fd)
+fd = func.get_WindowPoint()
+time.sleep(2)
+
+#测试点位
+#func.click_button_test(fd)
+
+func.myscreenshoot(fd)
 path = "./figs/"
 image = cv2.imread(path+"screenshot.jpg", cv2.IMREAD_COLOR)
-template = cv2.imread(img("lvpiao.png"), cv2.IMREAD_COLOR)
+template = cv2.imread(path+"jinbibuzu.png", cv2.IMREAD_COLOR)
 
 # 获取模板的宽度和高度
 template_height, template_width = template.shape[:2]
