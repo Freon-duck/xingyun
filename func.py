@@ -98,10 +98,13 @@ def click_button_test(fd):
     #time.sleep(5)
     rect = win32gui.GetWindowRect(fd)
     print(rect)
+    top_left = (rect[0], rect[1])
     while(1):
         time.sleep(5)
         point = win32api.GetCursorPos()
-        print("cur_point:", point)
+        percent1 = (point[0]-top_left[0])/1600
+        percent2 = (point[1]-top_left[1])/900
+        print(f"cur_point:{point}, percent:[{percent1}, {percent2}]")
 
 # def myscreenshoot(fd):
 #     '''
@@ -198,10 +201,11 @@ def reconnect(fd, Buttons, sleep_time=1):
 def ImgCmp(fd, Image, Template, threshold):
     '''
     :param fd:
-    :param Image: 被匹配的screenshot截图
+    :param Image: 被匹配的screenshot截图,格式为xxx.jpg/png
     :param Template: 匹配的图标
     :param threshold: 匹配阈值
-    :return:
+    :return: 超过阈值返回min_val, max_val, min_loc, max_loc, template_height, template_width
+            不超过返回空
     '''
     myscreenshoot(fd)
     dir_path = "./figs/"

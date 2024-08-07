@@ -17,13 +17,14 @@ def img(imgPath):
 fd = func.get_WindowPoint()
 time.sleep(2)
 
-#测试点位
+#测试点位######################################################
 #func.click_button_test(fd)
 
-func.myscreenshoot(fd)
+#func.myscreenshoot(fd)
 path = "./figs/"
+image = cv2.imread("./figs/test/jjcheiping.png", cv2.IMREAD_COLOR)
 image = cv2.imread(path+"screenshot.jpg", cv2.IMREAD_COLOR)
-template = cv2.imread(path+"jinbibuzu.png", cv2.IMREAD_COLOR)
+template = cv2.imread("./figs/loading.png", cv2.IMREAD_COLOR)
 
 # 获取模板的宽度和高度
 template_height, template_width = template.shape[:2]
@@ -35,7 +36,7 @@ result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
 min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 print(max_val)
 # 设置不同的匹配度阈值
-thresholds = [0.85]
+thresholds = [0.6]
 
 for threshold in thresholds:
     if max_val >= threshold:

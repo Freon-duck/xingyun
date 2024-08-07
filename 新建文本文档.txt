@@ -1,0 +1,2 @@
+pyi-makespec --onedir main.py 
+pyinstaller main.spec
