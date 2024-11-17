@@ -20,7 +20,7 @@ def get_WindowPoint():
     :return 返回该句柄
     """
     fd = win32gui.FindWindow("Qt5156QWindowIcon", "MuMu模拟器12")#父
-    #fd = win32gui.FindWindow("Qt5156QWindowIcon", "MuMu模拟器12-1")  # 父
+    fd = win32gui.FindWindow("Qt5156QWindowIcon", "MuMu模拟器12-1")  # 父
     #fd = win32gui.FindWindow("Qt5156QWindowIcon", "星陨计划")  # 父
     fd = win32gui.FindWindowEx(fd, None, "Qt5156QWindowIcon", "MuMuPlayer")#子
     print(f"Found window handle: {fd}")
@@ -175,6 +175,16 @@ def myscreenshoot(fd, tmp_path="screenshot.jpg"):
         #     mfcDC.DeleteDC()
         if saveBitMap is not None:
             win32gui.DeleteObject(saveBitMap.GetHandle())
+
+
+def get_scaled_width(fd):
+    # 获取窗口的矩形区域
+    rect = win32gui.GetWindowRect(fd)
+    # 计算窗口的宽度
+    width = rect[2] - rect[0]  # right - left
+    # 返回宽度与 1600 的比值
+    return width / 1600
+
 
 def reconnect(fd, Buttons, sleep_time=1):
     """
