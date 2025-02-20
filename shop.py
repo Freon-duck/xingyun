@@ -148,7 +148,7 @@ def buy_lvpiao(fd, Buttons):
         #匹配到0.999
         #匹配到买完的0.726
         #未匹配到0.5
-        threshold = 0.88
+        threshold = 0.86
         if max_val >= threshold:
             # 获取匹配结果的位置
             top_left = max_loc  # 对于 cv2.TM_CCOEFF_NORMED 方法，使用 max_loc
@@ -179,59 +179,60 @@ def buy_lvpiao(fd, Buttons):
             items_num[item] += 1
             print(f"----{item}数目：{items_num[item]}")
         time.sleep(2)
-    #拖动屏幕购买最下的
-    rect = win32gui.GetClientRect(fd)
-    # 计算拖拽起始位置, 固定的
-    start_pos = (0.5 * rect[2], 0.6 * rect[3])
-    end_pos = (0.5 * rect[2], 0.6 * rect[3] / 5)
-    func.drag_mouse(fd, start_pos, end_pos)  # 前台拖拽没问题
-    time.sleep(1)#这里不睡一下后面点击不了，很奇怪
+    if 0:
+        #拖动屏幕购买最下的
+        rect = win32gui.GetClientRect(fd)
+        # 计算拖拽起始位置, 固定的
+        start_pos = (0.5 * rect[2], 0.6 * rect[3])
+        end_pos = (0.5 * rect[2], 0.6 * rect[3] / 5)
+        func.drag_mouse(fd, start_pos, end_pos)  # 前台拖拽没问题
+        time.sleep(1)#这里不睡一下后面点击不了，很奇怪
 
-    for item in itemlist:
-        # 读取输入图像和模板图像
-        func.myscreenshoot(fd)
-        image = cv2.imread('./figs/screenshot.jpg', cv2.IMREAD_COLOR)
-        template_path = f'figs/{item}.png'
-        template = cv2.imread(template_path, cv2.IMREAD_COLOR)
-        # 获取模板的宽度和高度
-        template_height, template_width = template.shape[:2]
-        # 进行模板匹配
-        result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
-        # 找到匹配度最高的位置
-        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-        print(f"{item}匹配度：", max_val)
-        # 设置匹配度阈值
-        # 匹配到0.999
-        # 匹配到买完的0.726
-        # 未匹配到0.5
-        threshold = 0.88
-        if max_val >= threshold:
-            # 获取匹配结果的位置
-            top_left = max_loc  # 对于 cv2.TM_CCOEFF_NORMED 方法，使用 max_loc
-            bottom_right = (top_left[0] + template_width, top_left[1] + template_height)
-            # 获取窗口的矩形（左上角和右下角的坐标）
-            rect = win32gui.GetClientRect(fd)
-            # 点击购买
-            click_pos = (rect[2] * Buttons["shenmi_buy"][0], (bottom_right[1] + top_left[1]) / 2)
-            print("click", click_pos)
-            #按比例修正点击位置
-            scaled_num = func.get_scaled_width(fd)
-            click_pos = (click_pos[0], click_pos[1]*scaled_num)
-            print("click", click_pos)
-            func.myClick(fd, click_pos[0], click_pos[1], 1)
-            time.sleep(1)
+        for item in itemlist:
+            # 读取输入图像和模板图像
+            func.myscreenshoot(fd)
+            image = cv2.imread('./figs/screenshot.jpg', cv2.IMREAD_COLOR)
+            template_path = f'figs/{item}.png'
+            template = cv2.imread(template_path, cv2.IMREAD_COLOR)
+            # 获取模板的宽度和高度
+            template_height, template_width = template.shape[:2]
+            # 进行模板匹配
+            result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
+            # 找到匹配度最高的位置
+            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+            print(f"{item}匹配度：", max_val)
+            # 设置匹配度阈值
+            # 匹配到0.999
+            # 匹配到买完的0.726
+            # 未匹配到0.5
+            threshold = 0.88
+            if max_val >= threshold:
+                # 获取匹配结果的位置
+                top_left = max_loc  # 对于 cv2.TM_CCOEFF_NORMED 方法，使用 max_loc
+                bottom_right = (top_left[0] + template_width, top_left[1] + template_height)
+                # 获取窗口的矩形（左上角和右下角的坐标）
+                rect = win32gui.GetClientRect(fd)
+                # 点击购买
+                click_pos = (rect[2] * Buttons["shenmi_buy"][0], (bottom_right[1] + top_left[1]) / 2)
+                print("click", click_pos)
+                #按比例修正点击位置
+                scaled_num = func.get_scaled_width(fd)
+                click_pos = (click_pos[0], click_pos[1]*scaled_num)
+                print("click", click_pos)
+                func.myClick(fd, click_pos[0], click_pos[1], 1)
+                time.sleep(1)
 
-            ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "jinbibuzu.png", 0.9)
-            # 金币不够
-            if ImgCmpRes is not None:
-                func.click_button(fd, Buttons["returndating"], 3)
-                return 0
+                ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "jinbibuzu.png", 0.9)
+                # 金币不够
+                if ImgCmpRes is not None:
+                    func.click_button(fd, Buttons["returndating"], 3)
+                    return 0
 
-            func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
-            time.sleep(1)
-            func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
-            items_num[item] += 1
-            print(f"----{item}数目：{items_num[item]}")
+                func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
+                time.sleep(1)
+                func.myClick(fd, rect[2] * Buttons["queren_buy"][0], rect[3] * Buttons["queren_buy"][1])
+                items_num[item] += 1
+                print(f"----{item}数目：{items_num[item]}")
         time.sleep(2)
     return
 

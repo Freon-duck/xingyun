@@ -15,7 +15,7 @@ def img(imgPath):
 
 # 读取输入图像和模板图像
 fd = func.get_WindowPoint()
-time.sleep(2)
+#time.sleep(2)
 
 #测试点位######################################################
 #func.click_button_test(fd)
@@ -23,10 +23,10 @@ time.sleep(2)
 
 func.myscreenshoot(fd)
 path = "./figs/"
-image = cv2.imread("./figs/test/jjcheiping.png", cv2.IMREAD_COLOR)
+image = cv2.imread("./figs/screenshot.jpg", cv2.IMREAD_COLOR)
 image = cv2.imread(path+"screenshot.jpg", cv2.IMREAD_COLOR)
-template = cv2.imread("./figs/qizhinum.png", cv2.IMREAD_COLOR)
-
+template = cv2.imread("./figs/lvpiao.png", cv2.IMREAD_COLOR)
+time.sleep(2)
 # 获取模板的宽度和高度
 template_height, template_width = template.shape[:2]
 

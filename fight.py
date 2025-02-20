@@ -41,15 +41,16 @@ def choose_taofa(fd, Buttons, boss_num):
     func.click_button(fd, Buttons["duiwushezhi"], 1)
     time.sleep(1)
 
-    ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "repeatfight.png", 0.90)
-    if ImgCmpRes is None:
+    ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "repeatFightAlready.png", 0.95)
+    if ImgCmpRes is not None:
         func.click_button(fd, Buttons["returndating"], 2)
         return
-    else:
+
+    ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "repeatFightYes.png", 0.95)
+    if ImgCmpRes is None:
         #min_val, max_val, min_loc, max_loc, *res = ImgCmpRes
         func.click_button(fd, Buttons["repeatfight"])
         time.sleep(1)
-
     #战斗开始
     func.click_button(fd, Buttons["kaishizhandou"], 2)
     time.sleep(3)
@@ -225,7 +226,7 @@ def choose_jjc(fd, Buttons):
             func.myClick(fd, click_pos[0], click_pos[1])
             time.sleep(1)
 
-        func.click_button(fd, Buttons["kaishizhandou"], 2)
+        func.click_button(fd, Buttons["kaishizhandou"])
 
         # 匹配是否需要购买棋子
         func.myscreenshoot(fd)
@@ -236,11 +237,11 @@ def choose_jjc(fd, Buttons):
         # 找到匹配度最高的位置
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
         print("购买棋子匹配度：", max_val)
-        threshold = 0.80
+        threshold = 0.70
         if max_val >= threshold:
             print("棋子数目不足")
             time.sleep(2)
-            func.click_button(fd, Buttons["returndating"], 3)
+            func.click_button(fd, Buttons["returndating"], 5)
             return
         # 确认后会进入一个点击任意屏幕位置的按钮
         # 挂机50s
@@ -309,15 +310,16 @@ def choose_yuansu(fd, Buttons, boss_num):
     func.click_button(fd, Buttons["duiwushezhi"], 1)
     time.sleep(1)
 
-    ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "repeatfight.png", 0.90)
-    if ImgCmpRes is None:
+    ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "repeatFightAlready.png", 0.95)
+    if ImgCmpRes is not None:
         func.click_button(fd, Buttons["returndating"], 2)
         return
-    else:
+
+    ImgCmpRes = func.ImgCmp(fd, "screenshot.jpg", "repeatFightYes.png", 0.95)
+    if ImgCmpRes is None:
         #min_val, max_val, min_loc, max_loc, *res = ImgCmpRes
         func.click_button(fd, Buttons["repeatfight"])
         time.sleep(1)
-
     #战斗开始
     func.click_button(fd, Buttons["kaishizhandou"], 2)
     time.sleep(3)
